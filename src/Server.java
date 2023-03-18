@@ -11,6 +11,9 @@ public class Server {
     private static BufferedReader in;
     private static BufferedWriter out;
 
+    private static int n = 5;
+
+
     public static void main(String[] args) {
         try {
             try  {
@@ -18,23 +21,47 @@ public class Server {
                 System.out.println("Server is ready for your fashion, demon!");
                 clientSocket = server.accept();
                 try {
-                    while (true){
+                    //while (true){
                         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                         out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-                        String word = in.readLine();
-                        //|| word=="null"
-                        if(Objects.equals(word, "exit") || word==null ){
-                            break;
-                        }
-                        //else{
-                        System.out.println(word);
-                        out.write("Did you say : " + word + "?\n");
-                        out.flush();
-                        //}
+
+                        //XY
+                        String mass = in.readLine();
+                        System.out.println("xy: "+ mass);
+                        //Y
+//                        String y_mass = in.readLine();
+//                        System.out.println("y: "+ y_mass);
+
+                    String[] words = mass.replace("]["," ").replace("[", "").replace("]", "").replace(",","").split(" ");
+
+                    double[] xy = Arrays.stream(words)
+                            .mapToDouble(Integer::parseInt)
+                            .toArray();
+
+                    // Initialize area
+                    double area = 0.0;
+
+                    // Calculate value of shoelace formula
+                    int j = n - 1;
+                    for (int i = 0; i < n; i++)
+                    {
+                        area += (xy[j] + xy[i]) * (xy[j+5] - xy[i+5]);
+
+                        // j is previous vertex to i
+                        j = i;
                     }
 
+                    // Return absolute value
+                  //  return Math.abs(area / 2.0);
+                    double res=(Math.abs(area / 2.0));
+                    String ress=""+res;
+
+                    System.out.println("res: "+ ress);
+                    out.write(ress);
+                    out.flush();
+
                 } finally {
-                    System.out.println("Server stopped listening 808");
+                    System.out.println("Server stopped listening 808 line");
                     out.flush();
                     clientSocket.close();
                     in.close();
